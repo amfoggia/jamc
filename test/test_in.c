@@ -1,15 +1,16 @@
 #include "../src/ljmd.h"
 #include <string.h>
 
+
 int main(int argc, char **argv)
 {
     int nprint;
     char restfile[BLEN], trajfile[BLEN], ergfile[BLEN], line[BLEN];
-    
+    FILE * fn;
     mdsys_t sys;
     
-    char * atom= "2";
-    char * rest= "rs";
+    char * atom= "108";
+    char * rest= "argon_108.rest";
     
     /* read input file */
     if(get_a_line(stdin,line)) return 1;
@@ -37,47 +38,53 @@ int main(int argc, char **argv)
     nprint=atoi(line);
     
     int test_atom, test_steps, test_nprint;
-    double test_mass, test_epsilon, test_sigma, test_rcut, test_box, test_dt;
-    char * test_rest , * test_traject, * test_erg;
+    double test_mass=sys.mass, test_epsilon, test_sigma, test_rcut, test_box, test_dt;
+    char * test_rest , * test_traject=trajfile, * test_erg;
     
-    test_atom= 2;
-    if (sys.natoms != test_atom) return 1;
-    else printf("success 2\n");
-    test_mass= 3;
-    if (sys.mass != test_mass) return 1;
-    else printf("success 3\n");
-    test_epsilon= 4;
-    if (sys.epsilon != test_epsilon) return 1;
-    else printf("success 4\n");
-    test_sigma= 5;
-    if (sys.sigma != test_sigma) return 1;
-    else printf("success 5\n");
-    test_rcut= 6;
-    if (sys.rcut != test_rcut) return 1;
-    else printf("success 6\n");
-    test_box= 7;
-    if (sys.box != test_box) return 1;
-    else printf("success7\n");
-    test_rest= "rs";
-    if (strcmp (restfile, test_rest)!= 0) return 1;
-    else printf("success rs\n");
-    test_traject= "tr";
-    if (strcmp (trajfile, test_traject) !=0) return 1;
-    else printf("success tr\n");
-    test_erg= "er";
-    if (strcmp (ergfile, test_erg) !=0) return 1;
-    else printf("success er\n");
-    test_steps= 8;
-    if (sys.nsteps != test_steps) return 1;
-    else printf("success 8\n");
-    test_dt= 9;
-    if (sys.dt != test_dt) return 1;
-    else printf("success 9\n");
-    test_nprint= 10;
-    if (nprint != test_nprint) return 1;
-     else printf("success 10\n");
+    fn= fopen("test_in.dat", "w");
     
+     test_atom= 108;
+     if (sys.natoms != test_atom) return 1;
+     else fprintf(fn, "%d\n",sys.natoms );
+     test_mass= 39.948;
+     if (sys.mass != test_mass) return 1;
+     else fprintf(fn, "%g\n", sys.mass);
+     test_epsilon= 0.2379;
+     if (sys.epsilon != test_epsilon) return 1;
+     else fprintf(fn, "%g\n", sys.epsilon);
+     test_sigma= 3.405;
+     if (sys.sigma != test_sigma) return 1;
+     else fprintf(fn, "%g\n",sys.sigma);
+     test_rcut= 8.5;
+     if (sys.rcut != test_rcut) return 1;
+     else fprintf(fn, "%g\n",sys.rcut);
+     test_box= 17.1580;
+     if (sys.box != test_box) return 1;
+     else fprintf(fn, "%g\n",sys.box);
+     test_rest= "argon_108.rest";
+     if (strcmp (restfile, test_rest)!= 0) return 1;
+     else fprintf(fn, "%s\n",restfile);
+     test_traject= "argon_108.xyz";
+     if (strcmp (trajfile, test_traject) !=0) return 1;
+     else fprintf(fn, "%s\n",trajfile);
+     test_erg= "argon_108.dat";
+     if (strcmp (ergfile, test_erg) !=0) return 1;
+     else fprintf(fn, "%s\n",ergfile);
+     test_steps= 10000;
+     if (sys.nsteps != test_steps) return 1;
+     else fprintf(fn, "%d\n",sys.nsteps);
+     test_dt= 5.0;
+     if (sys.dt != test_dt) return 1;
+     else fprintf(fn, "%g\n",sys.dt);
+     test_nprint= 100;
+     if (nprint != test_nprint) return 1;
+     else fprintf(fn, "%d\n",nprint);
+    
+     fclose(fn);
     
     return 0;
 }
+
+
+
 
