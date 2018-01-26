@@ -11,6 +11,29 @@ Collaborators:
              
              - Alejandra Foggia    ---> GitHub: amfoggia
 
+Contributions:
+
+Jiaxin Wang:
+    unit test for kinetic energy
+    calculation optimization
+
+Marco Bettiol:
+    unit test for integration (velvervelt)
+    multi-threading
+
+Carolina Bonivento:
+    unit test for input/output
+    python interface
+
+Alejandra Foggia:
+    unit test for force calculation
+    MPI
+
+Remarks:
+
+
+
+
 
 This package contains simplified MD code with multi-threading
 parallelization for simulating atoms with a Lennard-Jones potential.

@@ -1,6 +1,6 @@
 // reference output of this test should be test_force.dat
 
-#include "../src/ljmd.h"
+#include "ljmd.h"
 
 int main(int argc, char * argv[]) {
 
