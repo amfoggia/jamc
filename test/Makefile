@@ -1,6 +1,6 @@
 # -*- Makefile for unit test -*-
 SHELL=/bin/sh
-CC=gcc
+CC=g++
 CFLAGS=-Wall -g -O3 -ffast-math -fomit-frame-pointer
 LDLIBS=-lm
 INC= -I$(INCDIR) -I.
@@ -20,11 +20,15 @@ HEADS=$(wildcard $(INCDIR)*.h)
 default: $(EXE)
 
 # linker rule
-$(EXEDIR)/%.x: %.o $(FOBJ)
+$(EXEDIR)/%.x: %.o $(FOBJ) $(SRCDIR)/cell.o
 	$(CC) -o $@ $(CFLAGS) $^ $(LDLIBS)
 
 # compile true source files
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(HEADS)
+	$(CC) -c $(CFLAGS) $< -o $@
+
+# special for cell
+$(OBJDIR)/cell.o: $(SRCDIR)/%.cc $(HEADS)
 	$(CC) -c $(CFLAGS) $< -o $@
 
 # compile testing source file

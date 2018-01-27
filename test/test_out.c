@@ -5,8 +5,8 @@ int main(int argc, char **argv)
 {
     FILE *traj,*erg;
     mdsys_t sys;
-    char * trajfile="test_output.xyz";
-    char * ergfile="test_output.dat";
+    const char * trajfile="test_output.xyz";
+    const char * ergfile="test_output.dat";
     
     sys.natoms=1;
     sys.nfi=10;
@@ -26,8 +26,6 @@ int main(int argc, char **argv)
     sys.rz[0]=4;
 
 
-
-
     
     erg=fopen(ergfile,"w");
     traj=fopen(trajfile,"w");
@@ -41,14 +39,7 @@ int main(int argc, char **argv)
     free(sys.rx);
     free(sys.ry);
     free(sys.rz);
-    /*
-    free(sys.vx);
-    free(sys.vy);
-    free(sys.vz);
-    free(sys.fx);
-    free(sys.fy);
-    free(sys.fz);
-    */
+
 
     return 0;
 }

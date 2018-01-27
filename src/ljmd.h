@@ -25,11 +25,15 @@
  * about the MD system */
 struct _mdsys {
     int natoms,nfi,nsteps;
-    double dt, mass, epsilon, sigma, box, rcut;
+    double dt, redmass, epsilon, sigma, box, rcut;
     double ekin, epot, temp;
     double *rx, *ry, *rz;
     double *vx, *vy, *vz;
     double *fx, *fy, *fz;
+    
+    // for cells
+    int cn;
+    double cl;
 };
 
 typedef struct _mdsys mdsys_t;
@@ -42,7 +46,11 @@ int get_a_line(FILE *fp, char *buf);
 void azzero(double *d, const int n);
 
 /* helper function: apply minimum image convention */
-double pbc(double x, const double boxby2);
+static inline double pbc(double x, const double boxby2) {
+    while (x >  boxby2) x -= 2.0*boxby2;
+    while (x < -boxby2) x += 2.0*boxby2;
+    return x;
+}
 
 /* compute kinetic energy */
 void ekin(mdsys_t *sys);
@@ -51,9 +59,13 @@ void ekin(mdsys_t *sys);
 void force(mdsys_t *sys);
 
 /* velocity verlet */
-void velverlet(mdsys_t *sys);
+void velverlet_1(mdsys_t *sys);
+void velverlet_2(mdsys_t *sys);
 
 /* append data to output. */
 void output(mdsys_t *sys, FILE *erg, FILE *traj);
+
+/* timer in ms */
+double stamp();
 
 #endif

@@ -1,4 +1,5 @@
 #include "ljmd.h"
+#include "cell.h"
 
 /* main */
 int main(int argc, char **argv) 
@@ -7,12 +8,13 @@ int main(int argc, char **argv)
     char restfile[BLEN], trajfile[BLEN], ergfile[BLEN], line[BLEN];
     FILE *fp,*traj,*erg;
     mdsys_t sys;
+    double timer=0; // for recording time
 
     /* read input file */
     if(get_a_line(stdin,line)) return 1;
     sys.natoms=atoi(line);
     if(get_a_line(stdin,line)) return 1;
-    sys.mass=atof(line);
+    sys.redmass = atof(line)*mvsq2e; // reduced mass
     if(get_a_line(stdin,line)) return 1;
     sys.epsilon=atof(line);
     if(get_a_line(stdin,line)) return 1;
@@ -30,7 +32,7 @@ int main(int argc, char **argv)
     sys.dt=atof(line);
     if(get_a_line(stdin,line)) return 1;
     nprint=atoi(line);
-
+    
     /* allocate memory */
     sys.rx=(double *)malloc(sys.natoms*sizeof(double));
     sys.ry=(double *)malloc(sys.natoms*sizeof(double));
@@ -63,6 +65,7 @@ int main(int argc, char **argv)
     /* initialize forces and energies.*/
     sys.nfi=0;
     force(&sys);
+    
     ekin(&sys);
     
     erg=fopen(ergfile,"w");
@@ -74,20 +77,24 @@ int main(int argc, char **argv)
 
     /**************************************************/
     /* main MD loop */
+    
     for(sys.nfi=1; sys.nfi <= sys.nsteps; ++sys.nfi) {
 
         /* write output, if requested */
         if ((sys.nfi % nprint) == 0)
             output(&sys, erg, traj);
-
+        
         /* propagate system and recompute energies */
-        velverlet(&sys);
+        velverlet_1(&sys);
+        force(&sys);
+        velverlet_2(&sys);
         ekin(&sys);
     }
     /**************************************************/
 
     /* clean up: close files, free memory */
     printf("Simulation Done.\n");
+    printf("\n timing: %.2f\n\n",timer);
     fclose(erg);
     fclose(traj);
 

@@ -9,15 +9,15 @@ int main(int argc, char **argv)
     FILE * fn;
     mdsys_t sys;
     
-    char * atom= "108";
-    char * rest= "argon_108.rest";
+    const char * atom= "108";
+    const char * rest= "argon_108.rest";
     
     /* read input file */
     if(get_a_line(stdin,line)) return 1;
     if (strcmp (line, atom)!= 0) return 1;
     sys.natoms=atoi(line);
     if(get_a_line(stdin,line)) return 1;
-    sys.mass=atof(line);
+    sys.redmass =atof(line);
     if(get_a_line(stdin,line)) return 1;
     sys.epsilon=atof(line);
     if(get_a_line(stdin,line)) return 1;
@@ -38,8 +38,7 @@ int main(int argc, char **argv)
     nprint=atoi(line);
     
     int test_atom, test_steps, test_nprint;
-    double test_mass=sys.mass, test_epsilon, test_sigma, test_rcut, test_box, test_dt;
-    char * test_rest , * test_traject=trajfile, * test_erg;
+    double test_mass=sys.redmass , test_epsilon, test_sigma, test_rcut, test_box, test_dt;
     
     fn= fopen("test_in.dat", "w");
     
@@ -47,8 +46,8 @@ int main(int argc, char **argv)
      if (sys.natoms != test_atom) return 1;
      else fprintf(fn, "%d\n",sys.natoms );
      test_mass= 39.948;
-     if (sys.mass != test_mass) return 1;
-     else fprintf(fn, "%g\n", sys.mass);
+     if (sys.redmass  != test_mass) return 1;
+     else fprintf(fn, "%g\n", sys.redmass );
      test_epsilon= 0.2379;
      if (sys.epsilon != test_epsilon) return 1;
      else fprintf(fn, "%g\n", sys.epsilon);
@@ -61,13 +60,13 @@ int main(int argc, char **argv)
      test_box= 17.1580;
      if (sys.box != test_box) return 1;
      else fprintf(fn, "%g\n",sys.box);
-     test_rest= "argon_108.rest";
+     const char * test_rest= "argon_108.rest";
      if (strcmp (restfile, test_rest)!= 0) return 1;
      else fprintf(fn, "%s\n",restfile);
-     test_traject= "argon_108.xyz";
+     const char * test_traject= "argon_108.xyz";
      if (strcmp (trajfile, test_traject) !=0) return 1;
      else fprintf(fn, "%s\n",trajfile);
-     test_erg= "argon_108.dat";
+     const char * test_erg= "argon_108.dat";
      if (strcmp (ergfile, test_erg) !=0) return 1;
      else fprintf(fn, "%s\n",ergfile);
      test_steps= 10000;
