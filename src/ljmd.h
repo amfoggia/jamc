@@ -13,6 +13,7 @@
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
+#include <mpi.h>
 
 /* generic file- or pathname buffer length */
 #define BLEN 200
@@ -30,7 +31,7 @@ struct _mdsys {
     double *rx, *ry, *rz;
     double *vx, *vy, *vz;
     double *fx, *fy, *fz;
-    
+  
     // for cells
     int cn;
     double cl;
@@ -54,6 +55,9 @@ static inline double pbc(double x, const double boxby2) {
 
 /* compute kinetic energy */
 void ekin(mdsys_t *sys);
+
+/* compute size variables for each mpi process */
+void varsize(int natoms, int * local_size, int * lower_bound, int * upper_bound);
 
 /* compute forces */
 void force(mdsys_t *sys);

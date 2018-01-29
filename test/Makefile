@@ -1,11 +1,11 @@
 # -*- Makefile for unit test -*-
 SHELL=/bin/sh
-CC=g++
+CC=mpicc
 CFLAGS=-Wall -g -O3 -ffast-math -fomit-frame-pointer
 LDLIBS=-lm
 INC= -I$(INCDIR) -I.
 
-OBJDIR=../objects_serial
+OBJDIR=../objects_mpi
 SRCDIR=../src
 INCDIR=../src
 EXEDIR=..
@@ -20,16 +20,16 @@ HEADS=$(wildcard $(INCDIR)*.h)
 default: $(EXE)
 
 # linker rule
-$(EXEDIR)/%.x: %.o $(FOBJ) $(SRCDIR)/cell.o
+$(EXEDIR)/%.x: %.o $(FOBJ) #$(SRCDIR)/cell.o
 	$(CC) -o $@ $(CFLAGS) $^ $(LDLIBS)
 
 # compile true source files
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(HEADS)
 	$(CC) -c $(CFLAGS) $< -o $@
 
-# special for cell
-$(OBJDIR)/cell.o: $(SRCDIR)/%.cc $(HEADS)
-	$(CC) -c $(CFLAGS) $< -o $@
+# # special for cell
+# $(OBJDIR)/cell.o: $(SRCDIR)/%.cc $(HEADS)
+# 	$(CC) -c $(CFLAGS) $< -o $@
 
 # compile testing source file
 %.o: %.c $(HEADS)

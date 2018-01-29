@@ -6,18 +6,21 @@ void force(mdsys_t *sys)
     double rsq,rsq_inv,r6,ffac;
     double rx,ry,rz;
     int i,j;
+    int local_size, lower_bound, upper_bound;
+
+    varsize(sys->natoms, &local_size, &lower_bound, &upper_bound);
     
     /* zero energy and forces */
     sys->epot=0.0;
-    azzero(sys->fx,sys->natoms);
-    azzero(sys->fy,sys->natoms);
-    azzero(sys->fz,sys->natoms);
+    azzero(sys->fx,local_size);
+    azzero(sys->fy,local_size);
+    azzero(sys->fz,local_size);
     double boxby2 = 0.5*sys->box;// pre-calculate
     double rcutsq = sys->rcut*sys->rcut;// pre-calculate, take square
     double c6 = sys->epsilon*pow(sys->sigma,6);
     double c12 = sys->epsilon*pow(sys->sigma,12);
-    
-    for(i=0; i < (sys->natoms); ++i) {
+
+    for (i = 0; i < local_size; ++i) {
         for(j=0; j < i; ++j) {
             /* particles have no interactions with themselves */
             
@@ -32,7 +35,6 @@ void force(mdsys_t *sys)
             rsq += rz*rz;
             if(rsq>rcutsq) continue; // 1D pre truncate
             
-            rsq = rx*rx + ry*ry + rz*rz;
             rsq_inv = 1.0/rsq;
             r6 = rsq_inv*rsq_inv*rsq_inv;
             ffac = (48*c12*r6-24*c6)*r6*rsq_inv;
@@ -58,7 +60,6 @@ void force(mdsys_t *sys)
             rsq += rz*rz;
             if(rsq>rcutsq) continue; // 1D pre truncate
             
-            rsq = rx*rx + ry*ry + rz*rz;
             rsq_inv = 1.0/rsq;
             r6 = rsq_inv*rsq_inv*rsq_inv;
             ffac = (48*c12*r6-24*c6)*r6*rsq_inv;
@@ -70,3 +71,4 @@ void force(mdsys_t *sys)
         }
     }
 }
+
