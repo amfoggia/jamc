@@ -9,11 +9,8 @@ OBJDIR=./
 SOURCES= $(shell find $(SRCDIR) -type f -name *.c)
 OBJ= $(patsubst $(SRCDIR)/%,./%,$(SOURCES:.c=.o))
 
-default: ../ljmd-serial.x
+default: ../ljmd-serial.x ../ljmd.so
 
-
-clean:
-	rm -f *.o ../ljmd-serial.x
 
 # compilation pattern rule for objects
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
@@ -22,6 +19,10 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c
 # linker rule
 ../ljmd-serial.x: $(OBJ)
 	$(CC) -o $@ $(CFLAGS) $^ $(LDLIBS)
+
+# dynamic lib
+../ljmd.so: $(filter-out $(OBJDIR)/ljmd.o,$(OBJ))
+	$(CC) -o $@ -shared $(LDLIBS) $^
 
 clean:
 	rm -f *.o ../ljmd-serial.x
