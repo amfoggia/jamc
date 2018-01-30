@@ -25,4 +25,4 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	$(CC) -o $@ -shared -fPIC $(LDLIBS) $^
 
 clean:
-	rm -f *.o ../*.so ../ljmd-serial.x
+	rm -f $(OBJDIR)/*.o ../*.so ../ljmd-serial.x

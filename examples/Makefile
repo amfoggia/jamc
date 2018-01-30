@@ -1,4 +1,3 @@
-
 # -*- Makefile -*-
 
 default: check

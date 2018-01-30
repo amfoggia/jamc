@@ -12,7 +12,7 @@ OBJ= $(patsubst $(SRCDIR)/%,./%,$(SOURCES:.c=.o))
 default: ../ljmd-openmp.x
 
 clean:
-	rm -f *.mod *.o ../ljmd-openmp.x
+	rm -f $(OBJDIR)/*.o ../ljmd-openmp.x
 
 # compilation pattern rule for objects
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
