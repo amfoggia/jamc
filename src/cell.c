@@ -32,33 +32,7 @@ void cell_force(mdsys_t *sys,cell_t *cell){
     double rcutsq = sys->rcut*sys->rcut;// pre-calculate, take square
     double c6 = sys->epsilon*pow(sys->sigma,6);
     double c12 = sys->epsilon*pow(sys->sigma,12);
-    // LOOP THROUGH CELLS' OWN ELEMENTS
-    for(int it=0;it<sys->cn*sys->cn*sys->cn;++it){
-        for(unsigned e1=0;e1<cell[it].idx.size();++e1){
-            int i = cell[it].idx[e1];
-            for(unsigned e2=e1+1;e2<cell[it].idx.size();++e2){
-                int j = cell[it].idx[e2];
-                // get distance between particle i and j
-                rx=pbc(sys->rx[i] - sys->rx[j], boxby2);
-                rsq = rx*rx;
-                if(rsq>rcutsq) continue;
-                ry=pbc(sys->ry[i] - sys->ry[j], boxby2);
-                rsq += ry*ry;
-                if(rsq>rcutsq) continue;
-                rz=pbc(sys->rz[i] - sys->rz[j], boxby2);
-                rsq += rz*rz;
-                if(rsq>rcutsq) continue;
-                
-                rsq_inv = 1.0/rsq;
-                r6 = rsq_inv*rsq_inv*rsq_inv;
-                ffac = (48*c12*r6-24*c6)*r6*rsq_inv;
-                sys->epot += 4*r6*(c12*r6-c6);
-                sys->fx[i] += rx*ffac; sys->fx[j] -= rx*ffac;
-                sys->fy[i] += ry*ffac; sys->fy[j] -= ry*ffac;
-                sys->fz[i] += rz*ffac; sys->fz[j] -= rz*ffac;
-            }
-        }
-    }
+
     // LOOP THROUGH CELL PAIRS
     for(unsigned it=0;it<sys->pair.size();it+=2) {
         // loop through cell pairs
@@ -67,10 +41,11 @@ void cell_force(mdsys_t *sys,cell_t *cell){
         for(unsigned e1=0;e1<cell[c1].idx.size();++e1){
             // element in cell 1
             int i = cell[c1].idx[e1];
-            for(unsigned e2=0;e2<cell[c2].idx.size();++e2){
+	    unsigned e2 = (c1==c2)? e1+1 : 0;
+            for(;e2<cell[c2].idx.size();++e2){
                 // element in cell 2
                 int j = cell[c2].idx[e2];
-                //if(i==j) continue;
+                if(i==j) continue;
                 // get distance between particle i and j
                 rx=pbc(sys->rx[i] - sys->rx[j], boxby2);
                 rsq = rx*rx;

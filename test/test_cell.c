@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
         pair_count+=1;
     }
     // non-repeatable Permutation of 27 to 2 should be 351
-    if(pair_count!=351) exit(1);
+    if(pair_count!=351+27) exit(1);
     
     sort(&sys,cel);
     

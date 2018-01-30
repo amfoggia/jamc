@@ -10,7 +10,10 @@ int main(int argc, char **argv)
     int nprint, i;
     int nprocs, rank;
     char restfile[BLEN], trajfile[BLEN], ergfile[BLEN], line[BLEN];
-    mdsys_t sys; FILE *fp;
+    mdsys_t sys;
+    FILE *fp;
+    cell_t *cel;
+    
 #ifdef _OPENMP
     int nthds = omp_get_max_threads(); // openmp
 #else
@@ -57,6 +60,17 @@ int main(int argc, char **argv)
         if(get_a_line(stdin,line)) return 1;
         nprint=atoi(line);
     }
+
+#ifdef CELL
+    sys.cl = sys.rcut;
+    sys.cn = floor(sys.box/sys.cl);
+
+    // Allocate memory for the array of cells
+    cel = new(cell_t[sys.cn*sys.cn*sys.cn]);
+    
+    // Create the list of cell pairs that are going to be used in the force calculation
+    pair(&sys);
+#endif /* CELL */
     
 #ifdef USE_MPI
     // Communicate the struct to the rest of the processes
@@ -77,8 +91,7 @@ int main(int argc, char **argv)
         sys.vz=(double *)malloc(sys.natoms*sizeof(double));
     }
     
-    /* read restart */
-    
+    /* read restart */    
     if (rank == 0) {
         fp=fopen(restfile,"r");
         if(fp) {
@@ -98,9 +111,19 @@ int main(int argc, char **argv)
         }
     }
     
+#ifdef CELL
+    // Sort the particles inside the cells
+    sort(&sys, cel);
+#endif /* CELL */    
+    
     /* initialize forces and energies.*/
     sys.nfi=0;
+    
+#ifdef CELL
+    cell_force(&sys, cel);
+#else
     force(&sys);
+#endif /* CELL */    
     
     if (rank == 0)
         ekin(&sys);
@@ -124,11 +147,17 @@ int main(int argc, char **argv)
         /* propagate system and recompute energies */
 #ifdef TIMING
         velverlet_1(&sys);
-        
-        if (rank == 0)
-            timer -= stamp();
-        
-        force(&sys);
+
+	if (rank == 0)
+	  timer -= stamp();
+#ifdef CELL
+	// Sort the particles inside the cells
+	sort(&sys, cel);
+
+	cell_force(&sys, cel);
+#else
+	force(&sys);
+#endif /* CELL */
         
         if (rank == 0)
             timer += stamp();
@@ -144,8 +173,14 @@ int main(int argc, char **argv)
         
         if (rank == 0)
             velverlet_1(&sys);
-        
-        force(&sys);
+
+#ifdef CELL
+	// Sort the particles inside the cells
+	sort(&sys, cel);
+        cell_force(&sys, cel);
+#else
+	force(&sys);
+#endif /* CELL */
         
         if (rank == 0)
             velverlet_2(&sys);
@@ -176,6 +211,10 @@ int main(int argc, char **argv)
     free(sys.fx);
     free(sys.fy);
     free(sys.fz);
+    
+#ifdef CELL    
+    delete [] cel;
+#endif    
     
 #ifdef USE_MPI
     MPI_Finalize();

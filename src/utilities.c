@@ -40,6 +40,8 @@ void pair(mdsys_t *sys) {
     int n = sys->cn;
     int total_cell = n*n*n;
     for(int c1=0;c1<total_cell;++c1){
+      sys->pair.push_back(c1);
+      sys->pair.push_back(c1);
         int k1 = c1%(n);
         int j1 = ((c1-k1)/n)%n;
         int i1 = (c1-j1*n-k1)/(n*n);
@@ -97,11 +99,11 @@ void pair(mdsys_t *sys) {
 
 // translate cell (i,j,k) to cel position but with boundary fixing
 int index3d(mdsys_t *sys, int i, int j, int k) {
-    while(i>sys->cn-1) i -= sys->cn;
-    while(i<0) i += sys->cn;
-    while(j>sys->cn-1) j -= sys->cn;
-    while(j<0) j += sys->cn;
-    while(k>sys->cn-1) k -= sys->cn;
-    while(k<0) k += sys->cn;
-    return k+sys->cn*(j+i*sys->cn);
+  i %= sys->cn;
+  j %= sys->cn;
+  k %= sys->cn;
+  if(i<0) i += sys->cn;
+  if(j<0) j += sys->cn;
+  if(k<0) k += sys->cn;
+  return k+sys->cn*(j+i*sys->cn);
 }
