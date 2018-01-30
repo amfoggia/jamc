@@ -2,8 +2,8 @@ from ctypes import *
 from math import *
 import sys
 
-class MDSYS(Structure):
-    _parms_ = [ ("natoms", c_int), ("nfi", c_int), ("nsteps", c_int), ("dt", c_double), ("redmass", c_double), ("epsilon", c_double), ("sigma", c_double), ("box", c_double), ("rcut", c_double), ("ekin", c_double), ("epot", c_double), ("temp", c_double), ("rx", POINTER(c_double)), ("ry", POINTER(c_double)), ("rz", POINTER(c_double)),("vx", POINTER(c_double)),("vy", POINTER(c_double)), ("vz", POINTER(c_double)), ("fx", POINTER(c_double)),("fy", POINTER(c_double)), ("fz", POINTER(c_double))]
+class mdsys_t (Structure):
+    _fields_ = [ ("natoms", c_int), ("nfi", c_int), ("nsteps", c_int), ("dt", c_double), ("redmass", c_double), ("epsilon", c_double), ("sigma", c_double), ("box", c_double), ("rcut", c_double), ("ekin", c_double), ("epot", c_double), ("temp", c_double), ("rx", POINTER(c_double)), ("ry", POINTER(c_double)), ("rz", POINTER(c_double)),("vx", POINTER(c_double)),("vy", POINTER(c_double)), ("vz", POINTER(c_double)), ("fx", POINTER(c_double)),("fy", POINTER(c_double)), ("fz", POINTER(c_double))]
 
 
 
@@ -12,9 +12,7 @@ def main():
 #import DSO
     dso = CDLL("../ljmd.so")
 
-    mdsys=MDSYS()
-    
-    p_mdsys= POINTER(MDSYS)
+    mdsys= mdsys_t()
     
     mvsq2e=2390.05736153349
 
@@ -53,8 +51,8 @@ def main():
     mdsys.rz[2] = 0.0
     
 #function's call
-    dso.force.argtypes = [p_mdsys]
-#dso.force.restype = p_mdsys
+    dso.force.argtypes = [POINTER(mdsys_t)]
+
 #do force
     dso.force(byref(mdsys))
     
@@ -62,7 +60,7 @@ def main():
 
     with open ("test_force.dat", "w") as f:
         for i in range(mdsys.natoms):
-            f.write ('{0} {1: >#020.8f} {2: >#020.8f} {3: >#020.8f}\n'.format(i, mdsys.fx[i], mdsys.fy[i], mdsys.fz[i]))
+            f.write ('{0} {1: >#019.8f}{2: >#020.8f}{3: >#020.8f}\n'.format(i, mdsys.fx[i], mdsys.fy[i], mdsys.fz[i]))
 
 ############################################################################################################
 
@@ -84,8 +82,8 @@ def main():
     mdsys.rz[2] = 0.0
     
     #function's call
-    dso.force.argtypes = [p_mdsys]
-   # dso.force.restype = p_mdsys
+    dso.force.argtypes = [POINTER(mdsys_t)]
+   
     #do force
     dso.force(byref(mdsys))
 
@@ -93,7 +91,7 @@ def main():
 
     with open ("test_force.dat", "a") as f:
         for i in range(mdsys.natoms):
-            f.write ('{0} {1: >#020.8f} {2: >#020.8f} {3: >#020.8f}\n'.format(i, mdsys.fx[i], mdsys.fy[i], mdsys.fz[i]))
+            f.write ('{0} {1: >#019.8f}{2: >#020.8f}{3: >#020.8f}\n'.format(i, mdsys.fx[i], mdsys.fy[i], mdsys.fz[i]))
 
 ##########################################################################################################
 #3rd CASE: all inside cutoff
@@ -115,8 +113,8 @@ def main():
     mdsys.rz[2] = 0.0
     
     #function's call
-    dso.force.argtypes = [p_mdsys]
-    #dso.force.restype = p_mdsys
+    dso.force.argtypes = [POINTER(mdsys_t)]
+    
     #do force
     dso.force(byref(mdsys))
 
@@ -124,7 +122,7 @@ def main():
 
     with open ("test_force.dat", "a") as f:
         for i in range(mdsys.natoms):
-            f.write ('{0} {1: >#020.8f} {2: >#020.8f} {3: >#020.8f}\n'.format(i, mdsys.fx[i], mdsys.fy[i], mdsys.fz[i]))
+            f.write ('{0} {1: >#019.8f}{2: >#020.8f}{3: >#020.8f}\n'.format(i, mdsys.fx[i], mdsys.fy[i], mdsys.fz[i]))
 
 ########################################################################################################################
 
@@ -162,13 +160,13 @@ def main():
     mdsys.rz[2] = 8.98
 
 #Particle 4
-    mdsys.rx[2] = 0.0
-    mdsys.ry[2] = 0.0
-    mdsys.rz[2] = 0.0
+    mdsys.rx[3] = 0.0
+    mdsys.ry[3] = 0.0
+    mdsys.rz[3] = 0.0
 
 #function's call
-    dso.force.argtypes = [p_mdsys]
-    dso.force.restype = p_mdsys
+    dso.force.argtypes = [POINTER(mdsys_t)]
+    
     #do force
     py_force = dso.force(byref(mdsys))
 
@@ -176,7 +174,7 @@ def main():
 
     with open ("test_force.dat", "a") as f:
         for i in range(mdsys.natoms):
-            f.write ('{0} {1: >#020.8f} {2: >#020.8f} {3: >#020.8f}\n'.format(i, mdsys.fx[i], mdsys.fy[i], mdsys.fz[i]))
+            f.write ('{0} {1: >#019.8f}{2: >#020.8f}{3: >#020.8f}\n'.format(i, mdsys.fx[i], mdsys.fy[i], mdsys.fz[i]))
 
 ##############################################################################################
 

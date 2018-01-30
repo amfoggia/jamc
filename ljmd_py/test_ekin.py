@@ -2,13 +2,13 @@ from ctypes import *
 from math import *
 import sys
 
-class MDSYS(Structure):
-    _parms_ = [ ("natoms", c_int), ("nfi", c_int), ("nsteps", c_int), ("dt", c_double), ("redmass", c_double), ("epsilon", c_double), ("sigma", c_double), ("box", c_double), ("rcut", c_double), ("ekin", c_double), ("epot", c_double), ("temp", c_double), ("rx", POINTER(c_double)), ("ry", POINTER(c_double)), ("rz", POINTER(c_double)),("vx", POINTER(c_double)),("vy", POINTER(c_double)), ("vz", POINTER(c_double)), ("fx", POINTER(c_double)),("fy", POINTER(c_double)), ("fz", POINTER(c_double))]
+class mdsys_t(Structure):
+    _fields_ = [ ("natoms", c_int), ("nfi", c_int), ("nsteps", c_int), ("dt", c_double), ("redmass", c_double), ("epsilon", c_double), ("sigma", c_double), ("box", c_double), ("rcut", c_double), ("ekin", c_double), ("epot", c_double), ("temp", c_double), ("rx", POINTER(c_double)), ("ry", POINTER(c_double)), ("rz", POINTER(c_double)),("vx", POINTER(c_double)),("vy", POINTER(c_double)), ("vz", POINTER(c_double)), ("fx", POINTER(c_double)),("fy", POINTER(c_double)), ("fz", POINTER(c_double))]
 
 def main():
 
-    mdsys=MDSYS()
-    p_mdsys= POINTER(MDSYS)
+    mdsys= mdsys_t()
+
 
 #import DSO
     dso = CDLL("../ljmd.so")
@@ -36,15 +36,16 @@ def main():
         mdsys.vz[i] = 1e-3
 
 #function's call
-    dso.ekin.argtypes = [p_mdsys]
-    dso.ekin.restype = p_mdsys
-#do ekin
-    iekin = dso.ekin(byref(mdsys))
+    dso.ekin.argtypes = [POINTER(mdsys_t)]
 
-    if(iekin==expected):
+#do ekin
+    dso.ekin(byref(mdsys))
+
+    if(mdsys.ekin==expected):
+        
         return 0
     else:
-        return 1
+        exit
 if __name__ == "__main__":
     main()
 

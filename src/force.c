@@ -6,7 +6,6 @@
 /* newton omp aggressive with replicated memory */
 void force(mdsys_t *sys)
 {
-    printf("called\n");
     double rsq,rsq_inv,r6,ffac;
     double rx,ry,rz;
     //printf("%f\n",sys->rx[0]);

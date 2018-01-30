@@ -1,4 +1,4 @@
-/* 
+/*
  * simple lennard-jones potential MD code with velocity verlet.
  * units: Length=Angstrom, Mass=amu; Energy=kcal
  *
