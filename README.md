@@ -207,7 +207,8 @@ force function accumulated timing:
 
 |argon_108 (ms)|argon_2916 (ms)|feature|
 |--------------|---------------|-------|
-|              |               |serial cell-list|
+|2999|99288|original|
+|||serial cell-list|
 
 
 
