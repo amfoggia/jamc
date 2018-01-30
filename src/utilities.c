@@ -57,37 +57,37 @@ void pair(mdsys_t *sys) {
                 sys->pair.push_back(c1);
                 sys->pair.push_back(c2);
             }
-            // pierodic in i, 2 cases
+            // periodic in i, 2 cases
             else if (dist+n*n+2*n*di<4 || dist+n*n-2*n*di<4){
                 sys->pair.push_back(c1);
                 sys->pair.push_back(c2);
             }
-            // pierodic in j, 2 cases
+            // periodic in j, 2 cases
             else if (dist+n*n+2*n*dj<4 || dist+n*n-2*n*dj<4){
                 sys->pair.push_back(c1);
                 sys->pair.push_back(c2);
             }
-            // pierodic in k, 2 cases
+            // periodic in k, 2 cases
             else if (dist+n*n+2*n*dk<4 || dist+n*n-2*n*dk<4){
                 sys->pair.push_back(c1);
                 sys->pair.push_back(c2);
             }
-            // pierodic in i,j, 4 cases
+            // periodic in i,j, 4 cases
             else if (dist+2*n*n+2*n*(di+dj)<4 || dist+2*n*n+2*n*(di-dj)<4 || dist+2*n*n+2*n*(dj-di)<4|| dist+2*n*n-2*n*(di+dj)<4){
                 sys->pair.push_back(c1);
                 sys->pair.push_back(c2);
             }
-            // pierodic in i,k, 4 cases
+            // periodic in i,k, 4 cases
             else if (dist+2*n*n+2*n*(di+dk)<4 || dist+2*n*n+2*n*(di-dk)<4 || dist+2*n*n+2*n*(dk-di)<4|| dist+2*n*n-2*n*(di+dk)<4){
                 sys->pair.push_back(c1);
                 sys->pair.push_back(c2);
             }
-            // pierodic in j,k, 4 cases
+            // periodic in j,k, 4 cases
             else if (dist+2*n*n+2*n*(dk+dj)<4 || dist+2*n*n+2*n*(dk-dj)<4 || dist+2*n*n+2*n*(dj-dk)<4|| dist+2*n*n-2*n*(dk+dj)<4){
                 sys->pair.push_back(c1);
                 sys->pair.push_back(c2);
             }
-            // peirodic in ijk, 8 cases
+            // periodic in ijk, 8 cases
             else if (dist+3*n*n+2*n*(dk+dj+di)<4 || dist+3*n*n+2*n*(dk+dj-di)<4 || dist+3*n*n+2*n*(-dk+dj+di)<4 || dist+3*n*n+2*n*(dk-dj+di)<4 || dist+3*n*n+2*n*(-dk-dj+di)<4 || dist+3*n*n+2*n*(-dk+dj-di)<4 || dist+3*n*n+2*n*(dk-dj-di)<4 || dist+3*n*n-2*n*(dk+dj+di)<4){
                 sys->pair.push_back(c1);
                 sys->pair.push_back(c2);

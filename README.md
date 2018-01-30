@@ -3,13 +3,62 @@ P1.6 group assignment (GROUP 1): Lennard-Jones Molecular Dynamics
 
 ## Collaborators:
 
-             - Jiaxin Wang         ---> GitHub: ricphy 
-             
+             - Jiaxin Wang         ---> GitHub: ricphy
+
              - Marco Bettiol       ---> GitHub: marcob3t
-             
+
              - Carolina Bonivento  ---> GitHub: carolinabonivento
-             
+
              - Alejandra Foggia    ---> GitHub: amfoggia
+
+## How To:
+
+Molecular Dynamics with Lennard-Jones potential energy.
+
+This code can be used in a wide variety of ways:
+
+* depending on the hardware available:
+     * Serial code
+     * Parallel code with:
+			     * OpenMP
+			     * MPI
+
+     * With or without a major optimization: cell list
+     * And with different implementations of the `force` function
+
+#### Basic Compilation
+
+The `Makefile` contained in this root folder allows you to compile the code in its serial version, typing `make serial`, in its OpenMP parallel version, typing `make openmp`, or in its MPI parallel version, typing `make mpi`. The default option `make` generates the three executables.
+
+Two other options are possible. Typing `make unitest`, a series of test are performed on the different functions, taking as argument the input files inside the `examples` folder. Also with `make check` not only the unit (function) tests are performed but also the integration tests for the serial, OpenMP and MPI version.
+
+#### Selecting the force function
+
+Inside each `objects_` folder there's a `Makefile` in where several flags can be activated. In each one the following flags are available:
+
+* F_INDEX_ARRAY (to use the force function where the third Newton's law is applied, the loop is linearized and the indexes are pre-calculated in an array)
+
+* F_ATOMIC (to use the force function where the third Newton's law is applied and an atomic operation is performed by OpenMP)
+
+* F_BASIC (to use the force function where the Newton's third law is not applied)
+
+* The default one is the latest version of the force function, where the third Newton's law is implemented, the loop is linearized and the indexes are calculated in the loop.
+
+In order to make OpenMP available the flag `-fopenmp` needs to be added in `CFLAGS`. To use MPI, the corresponding flag is `USE_MPI`. OpenMP and also MPI are available for all the previous versions of the `force` function.
+
+#### Using the cell list optimization
+
+The cell list optimization is only available to use it with the serial code and the force function is special in this case. In order to make this available the flag `CELL` needs to be added in the `CFLAGS`. This can be added in all of the `objects_.../Makefile` but the program has no parallel optimization implemented in that case.
+
+### Using the Python interface
+
+In order to use the Python interface:
+
+1) type `make serial` in the root directory
+
+2) go to `examples` directory and type `python ../ljmd_py/ljmd.py < input_file_name.inp` This will read the input file and it will print on screan the initialization values for the `mdsys_t` structure.
+
+To run the unit tests in Python, inside the `ljmd_py` folder type `python test_<function_name>.py`.
 
 ## Contributions:
 
@@ -62,13 +111,13 @@ aggressive truncation is better than spherical truncation:
 /* get distance between particle i and j */
 rx=pbc(sys->rx[i] - sys->rx[j], boxby2);
 rsq = rx*rx;
-if(rsq>rcutsq) continue; 
+if(rsq>rcutsq) continue;
 ry=pbc(sys->ry[i] - sys->ry[j], boxby2);
 rsq += ry*ry;
-if(rsq>rcutsq) continue; 
+if(rsq>rcutsq) continue;
 rz=pbc(sys->rz[i] - sys->rz[j], boxby2);
 rsq += rz*rz;
-if(rsq>rcutsq) continue; 
+if(rsq>rcutsq) continue;
 ```
 which is a temporary solution before implementing cell-list
 
@@ -219,7 +268,7 @@ the advantage disappeared with multi-threading.
 |11899|7.68|9|+agg. trunc newt(lin.loop, replicated mem, inplace indexes)|
 |10952|8.35|10|+agg. trunc newt(lin.loop, replicated mem, inplace indexes)|
 
-
+![omp_all](https://user-images.githubusercontent.com/26146472/35590358-f4193db4-0606-11e8-8688-845aab138177.png)
 
 |argon_2916 (ms)|speedup|MPI_procs/OMP_threads|feature|
 |--------------|--------|---------------------|-------|
@@ -228,6 +277,7 @@ the advantage disappeared with multi-threading.
 |30437|2.11|3/1|+Newton +agg.|
 |24761|2.60|4/1|+Newton +agg.|
 
+![mpi](https://user-images.githubusercontent.com/26146472/35590406-0e9ac43c-0607-11e8-9fea-5bdcd2f5d3fe.png)
 
 * applying cell-list
 
@@ -275,8 +325,3 @@ force function (+ sorting atoms into cells) accumulated timing:
 |--------------|---------------|-------|
 |2999|99288|original|
 |1543|22633|serial cell-list|
-
-
-
-
-

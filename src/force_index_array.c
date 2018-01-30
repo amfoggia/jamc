@@ -92,12 +92,6 @@ void force_index_array(mdsys_t *sys)
 #pragma omp for schedule(guided,CHUNKSIZE)
 #endif
         for(n=lower_bound; n<upper_bound; ++n) {
-
-            // compute indexes as a function of n
-            /*
-            i = sys->natoms - 2 - (int)(sqrt(-8*n + 4*sys->natoms*(sys->natoms-1)-7)/2.0 - 0.5);
-            j = n + i + 1 - sys->natoms*(sys->natoms-1)/2 + (sys->natoms-i)*((sys->natoms-i)-1)/2;
-            */
             
             i=indexes_i[n]; // obtain original i index
             j=indexes_j[n]; // obtain original j index

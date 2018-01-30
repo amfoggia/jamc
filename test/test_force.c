@@ -46,7 +46,7 @@ int main(int argc, char * argv[]) {
   force(&sys3);
 
   for (i = 0; i < sys3.natoms; ++i) {
-    fprintf(fp, "%d%20.8f%20.8f%20.8f\n", i, );
+    fprintf(fp, "%d%20.8f%20.8f%20.8f\n", i, sys3.fx[i], sys3.fy[i], sys3.fz[i]);
   }
 
   // SECOND CASE: two inside the cutoff, one outside

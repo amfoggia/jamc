@@ -17,10 +17,6 @@ void force(mdsys_t *sys)
     int niters = (sys->natoms) * (sys->natoms - 1) / 2; // to linearize (and balance) the loop with openmp / mpi
     // accordingly to MPI policies
     
-    /*
-    int * indexes_i, * indexes_j; // to store indexes
-    */
-    
     int nprocs, rank, local_niter, lower_bound, upper_bound;
 #ifdef USE_MPI
     MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
@@ -47,18 +43,6 @@ void force(mdsys_t *sys)
     lower_bound = 0;
     upper_bound = niters;
 #endif /* USE_MPI */
-    
-    /*    
-    // allocate and compute indexes
-    indexes_i=(int *)malloc(niters*sizeof(int));
-    indexes_j=(int *)malloc(niters*sizeof(int));
-    for (i=0, n=0; i<sys->natoms; ++i) {
-        for (j=i+1; j<sys->natoms; ++j, ++n) {
-            indexes_i[n] = i;
-            indexes_j[n] = j;
-        }
-    }
-    */
     
     double boxby2 = 0.5*sys->box;// pre-calculate
     double rcutsq = sys->rcut*sys->rcut;// pre-calculate, take square
@@ -104,11 +88,6 @@ void force(mdsys_t *sys)
             // compute indexes as a function of n
             i = sys->natoms - 2 - (int)(sqrt(-8*n + 4*sys->natoms*(sys->natoms-1)-7)/2.0 - 0.5);
             j = n + i + 1 - sys->natoms*(sys->natoms-1)/2 + (sys->natoms-i)*((sys->natoms-i)-1)/2;
-            
-            /*
-            i=indexes_i[n]; // obtain original i index
-            j=indexes_j[n]; // obtain original j index
-            */
 
             // get distance between particle i and j
             rx=pbc(sys->rx[i] - sys->rx[j], boxby2);
@@ -168,11 +147,5 @@ void force(mdsys_t *sys)
     else
         MPI_Reduce(&sys->epot, &sys->epot, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 #endif /* USE_MPI */
-
-    /*
-    // free memory
-    free(indexes_i);
-    free(indexes_j);
-    */
 
 }

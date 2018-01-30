@@ -104,6 +104,6 @@ void sort(mdsys_t *sys, cell_t *cel);
 
 /* calculate force with cell list */
 void cell_force(mdsys_t *sys, cell_t *cel);
-
-#endif
 }
+#endif
+
