@@ -1,6 +1,6 @@
 # -*- Makefile -*-
 CC=g++
-CFLAGS=-Wall -g -fomit-frame-pointer -O3 -ffast-math -fexpensive-optimizations -DCELL #-DTIMING #-pg
+CFLAGS=-Wall -fPIC -g -fomit-frame-pointer -O3 -ffast-math -fexpensive-optimizations -DCELL #-DTIMING #-pg
 LDLIBS=-lm
 
 # list of source files
@@ -22,7 +22,7 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c
 
 # dynamic lib
 ../ljmd.so: $(filter-out $(OBJDIR)/ljmd.o,$(OBJ))
-	$(CC) -o $@ -shared $(LDLIBS) $^
+	$(CC) -o $@ -shared -fPIC $(LDLIBS) $^
 
 clean:
-	rm -f *.o ../ljmd-serial.x
+	rm -f *.o ../*.so ../ljmd-serial.x
