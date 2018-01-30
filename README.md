@@ -201,14 +201,50 @@ the advantage disappeared with multi-threading.
 
 * applying cell-list
 
-profiling with cell list
+profiling with original code (argon_2916)
 
-force function accumulated timing:
+```
+Each sample counts as 0.01 seconds.
+%   cumulative   self              self     total
+time   seconds   seconds    calls  ms/call  ms/call  name
+88.67     95.83    95.83     1001    95.74   107.17  force(_mdsys*)
+10.59    107.28    11.45 6961373659     0.00     0.00  pbc(double, double)
+0.82    108.17     0.89     1001     0.89     0.89  ekin(_mdsys*)
+0.02    108.19     0.02     1000     0.02     0.02  velverlet_2(_mdsys*)
+0.01    108.20     0.01     1000     0.01     0.01  velverlet_1(_mdsys*)
+0.00    108.20     0.00     3006     0.00     0.00  azzero(double*, int)
+0.00    108.20     0.00     2000     0.00     0.00  stamp()
+0.00    108.20     0.00       12     0.00     0.00  get_a_line(_IO_FILE*, char*)
+```
+
+profiling with cell list (argon_2916)
+
+```
+Each sample counts as 0.01 seconds.
+%   cumulative   self              self     total
+time   seconds   seconds    calls  ms/call  ms/call  name
+75.32     18.41    18.41     1001    18.39    24.18  cell_force(_mdsys*, _mdcell*)
+23.69     24.20     5.79 3463801270     0.00     0.00  pbc(double, double)
+0.59     24.35     0.15     1001     0.15     0.15  ekin(_mdsys*)
+0.20     24.40     0.05     1001     0.05     0.09  sort(_mdsys*, _mdcell*)
+0.16     24.44     0.04  2918916     0.00     0.00  index3d(_mdsys*, int, int, int)
+0.08     24.46     0.02     1000     0.02     0.02  velverlet_2(_mdsys*)
+0.04     24.47     0.01     1000     0.01     0.01  velverlet_1(_mdsys*)
+0.00     24.47     0.00     3006     0.00     0.00  azzero(double*, int)
+0.00     24.47     0.00     2000     0.00     0.00  stamp()
+0.00     24.47     0.00      469     0.00     0.00  std::vector<int, std::allocator<int> >::_M_insert_aux(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, int const&)
+0.00     24.47     0.00       12     0.00     0.00  get_a_line(_IO_FILE*, char*)
+0.00     24.47     0.00        8     0.00     0.00  std::vector<int, std::allocator<int> >::push_back(int const&)
+0.00     24.47     0.00        1     0.00     0.00  pair(_mdsys*)
+
+```
+
+force function (+ sorting atoms into cells) accumulated timing:
 
 |argon_108 (ms)|argon_2916 (ms)|feature|
 |--------------|---------------|-------|
 |2999|99288|original|
-|||serial cell-list|
+|1543|22633|serial cell-list|
 
 
 
