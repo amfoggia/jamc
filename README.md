@@ -193,10 +193,10 @@ the advantage disappeared with multi-threading.
 
 |argon_2916 (ms)|speedup|MPI_procs/OMP_threads|feature|
 |--------------|--------|---------------------|-------|
-|||1/10|+Newton +agg.|
-|||2/10|+Newton +agg.|
-|||3/10|+Newton +agg.|
-|||4/10|+Newton +agg.|
+|64287|1.0|1/1|+Newton +agg.|
+|39563|1.62|2/1|+Newton +agg.|
+|30437|2.11|3/1|+Newton +agg.|
+|24761|2.60|4/1|+Newton +agg.|
 
 
 * applying cell-list
